@@ -1,0 +1,24 @@
+# Node
+node_modules/
+npm-debug.log*
+
+# Expo
+.expo/
+dist/
+web-build/
+
+# Environment
+.env
+.env.*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Android / iOS
+android/
+ios/
+
+# VS Code
+.vscode/
+ 
