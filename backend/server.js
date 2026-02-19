@@ -13,7 +13,7 @@ app.use(express.json());
 
 // mount auth routes
 app.use("/api/auth", authRoutes);
-
+console.log("MONGO_URI:", process.env.MONGO_URI);
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB connected"))
