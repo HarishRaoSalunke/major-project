@@ -35,7 +35,18 @@ export const loginWithPassword = async (req, res) => {
     return res.status(401).json({ code: "INVALID_PASSWORD" });
   }
 
-  res.json({ message: "Login success", user });
+  const safeUser = {
+    _id: user._id,
+    fullName: user.fullName,
+    mobile: user.mobile,
+    userId: user.userId,
+    userType: user.userType,
+  };
+
+  res.json({
+    message: "Login success",
+    user: safeUser,
+  });
 };
 
 // REGISTER – SEND OTP
@@ -128,8 +139,17 @@ export const verifyRegisterOtp = async (req, res) => {
   user.otpExpires = null;
   user.isVerified = true;
   await user.save();
-
-  res.json({ message: "OTP verified successfully" });
+  const safeUser = {
+    _id: user._id,
+    fullName: user.fullName,
+    mobile: user.mobile,
+    userId: user.userId,
+    userType: user.userType,
+  };
+  res.json({
+    message: "OTP verified successfully",
+    user, // ✅ RETURN USER
+  });
 };
 export const checkUserId = async (req, res) => {
   const { userId } = req.body;
@@ -159,4 +179,39 @@ export const completeRegistration = async (req, res) => {
   await user.save();
 
   res.json({ message: "Registration completed" });
+};
+// UPDATE PROFILE
+export const updateProfile = async (req, res) => {
+  const { userId, address, pincode } = req.body;
+
+  try {
+    const user = await User.findOne({ userId });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    user.address = address;
+    user.pincode = pincode;
+
+    await user.save();
+
+    const safeUser = {
+      _id: user._id,
+      fullName: user.fullName,
+      mobile: user.mobile,
+      userId: user.userId,
+      userType: user.userType,
+      address: user.address,
+      pincode: user.pincode,
+      profileImage: user.profileImage,
+    };
+
+    res.json({
+      message: "Profile updated successfully",
+      user: safeUser,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
 };

@@ -5,9 +5,14 @@
 //   TouchableOpacity,
 //   StyleSheet,
 //   Alert,
+//   KeyboardAvoidingView,
+//   Platform,
 // } from "react-native";
 // import { useState } from "react";
 
+// const PRIMARY = "#2563EB";
+// const BG_TOP = "#EEF2FF";
+// const BG_BOTTOM = "#FFFFFF";
 // const API = "http://192.168.29.9:5000/api/auth";
 
 // export default function LoginOtpScreen({ route, navigation }) {
@@ -15,8 +20,8 @@
 //   const [otp, setOtp] = useState("");
 
 //   const verifyOtp = async () => {
-//     if (!otp || otp.length !== 6) {
-//       Alert.alert("Invalid OTP", "Enter 6-digit OTP");
+//     if (otp.length !== 6) {
+//       Alert.alert("Invalid OTP", "Please enter the 6-digit OTP");
 //       return;
 //     }
 
@@ -28,69 +33,53 @@
 //       });
 
 //       if (!res.ok) {
-//         Alert.alert("Error", "Invalid OTP");
+//         Alert.alert("Error", "Incorrect OTP");
 //         return;
 //       }
-
-//       navigation.replace("ModeSelection");
+//       navigation.navigate("ModeSelection");
 //     } catch (err) {
 //       Alert.alert("Error", "Something went wrong");
 //     }
 //   };
 
 //   return (
-//     <View style={styles.container}>
-//       <Text style={styles.title}>Enter OTP</Text>
+//     <KeyboardAvoidingView
+//       behavior={Platform.OS === "ios" ? "padding" : undefined}
+//       style={styles.wrapper}
+//     >
+//       {/* Top curved background */}
+//       <View style={styles.topBg} />
 
-//       <TextInput
-//         placeholder="6-digit OTP"
-//         keyboardType="number-pad"
-//         maxLength={6}
-//         style={styles.input}
-//         value={otp}
-//         onChangeText={setOtp}
-//       />
+//       <View style={styles.container}>
+//         <Text style={styles.title}>Verify OTP</Text>
+//         <Text style={styles.subtitle}>
+//           Enter the 6-digit code sent to{" "}
+//           <Text style={styles.mobile}>{mobile}</Text>
+//         </Text>
 
-//       <TouchableOpacity style={styles.button} onPress={verifyOtp}>
-//         <Text style={styles.btnText}>Verify OTP</Text>
-//       </TouchableOpacity>
-//     </View>
+//         <View style={styles.card}>
+//           <TextInput
+//             style={styles.otpInput}
+//             keyboardType="number-pad"
+//             maxLength={6}
+//             value={otp}
+//             onChangeText={setOtp}
+//             placeholder="● ● ● ● ● ●"
+//             placeholderTextColor="#9CA3AF"
+//           />
+
+//           <TouchableOpacity
+//             style={[styles.button, otp.length !== 6 && { opacity: 0.5 }]}
+//             disabled={otp.length !== 6}
+//             onPress={verifyOtp}
+//           >
+//             <Text style={styles.buttonText}>Verify OTP</Text>
+//           </TouchableOpacity>
+//         </View>
+//       </View>
+//     </KeyboardAvoidingView>
 //   );
 // }
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     justifyContent: "center",
-//     padding: 20,
-//     backgroundColor: "#fff",
-//   },
-//   title: {
-//     fontSize: 24,
-//     fontWeight: "800",
-//     textAlign: "center",
-//     marginBottom: 20,
-//   },
-//   input: {
-//     borderWidth: 1,
-//     borderColor: "#E5E7EB",
-//     borderRadius: 12,
-//     padding: 14,
-//     fontSize: 18,
-//     textAlign: "center",
-//     marginBottom: 20,
-//   },
-//   button: {
-//     backgroundColor: "#2563EB",
-//     padding: 16,
-//     borderRadius: 14,
-//   },
-//   btnText: {
-//     color: "#fff",
-//     fontWeight: "700",
-//     textAlign: "center",
-//   },
-// });
 import {
   View,
   Text,
@@ -101,16 +90,18 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 
 const PRIMARY = "#2563EB";
 const BG_TOP = "#EEF2FF";
 const BG_BOTTOM = "#FFFFFF";
 const API = "http://192.168.29.9:5000/api/auth";
 
-export default function LoginOtpScreen({ route, navigation }) {
+export default function LoginOtpScreen({ route }) {
   const { mobile } = route.params;
   const [otp, setOtp] = useState("");
+  const { login } = useContext(AuthContext);
 
   const verifyOtp = async () => {
     if (otp.length !== 6) {
@@ -125,13 +116,19 @@ export default function LoginOtpScreen({ route, navigation }) {
         body: JSON.stringify({ mobile, otp }),
       });
 
+      const data = await res.json();
+      console.log("OTP RESPONSE:", data); // 👈 ADD THIS
       if (!res.ok) {
         Alert.alert("Error", "Incorrect OTP");
         return;
       }
 
-      navigation.replace("ModeSelection");
+      // ✅ Save user to AuthContext
+      await login(data.user);
+
+      // ❌ DO NOT navigate
     } catch (err) {
+      console.log("OTP ERROR:", err); // 👈 ADD THIS
       Alert.alert("Error", "Something went wrong");
     }
   };
@@ -141,7 +138,6 @@ export default function LoginOtpScreen({ route, navigation }) {
       behavior={Platform.OS === "ios" ? "padding" : undefined}
       style={styles.wrapper}
     >
-      {/* Top curved background */}
       <View style={styles.topBg} />
 
       <View style={styles.container}>
@@ -174,7 +170,6 @@ export default function LoginOtpScreen({ route, navigation }) {
     </KeyboardAvoidingView>
   );
 }
-
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,

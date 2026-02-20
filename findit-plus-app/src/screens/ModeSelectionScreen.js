@@ -1,76 +1,3 @@
-// // import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-
-// // export default function ModeSelectionScreen() {
-// //   return (
-// //     <View style={styles.container}>
-// //       <Text style={styles.title}>Choose Your Mode</Text>
-
-// //       <TouchableOpacity style={styles.card}>
-// //         <Text style={styles.cardTitle}>🔍 Lost Item Finder</Text>
-// //         <Text style={styles.cardSub}>Found an item? Help return it</Text>
-// //       </TouchableOpacity>
-
-// //       <TouchableOpacity style={styles.card}>
-// //         <Text style={styles.cardTitle}>📦 Lost Item Owner</Text>
-// //         <Text style={styles.cardSub}>Lost something? Find it here</Text>
-// //       </TouchableOpacity>
-// //     </View>
-// //   );
-// // }
-// import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-
-// export default function ModeSelectionScreen({ navigation }) {
-//   return (
-//     <View style={styles.container}>
-//       <Text style={styles.title}>Choose Your Mode</Text>
-
-//       <TouchableOpacity
-//         style={styles.card}
-//         onPress={() => navigation.replace("FinderStack")}
-//       >
-//         <Text style={styles.cardTitle}>🔍 Lost Item Finder</Text>
-//         <Text style={styles.cardSub}>Found an item? Help return it</Text>
-//       </TouchableOpacity>
-
-//       <TouchableOpacity
-//         style={styles.card}
-//         onPress={() => navigation.replace("OwnerStack")}
-//       >
-//         <Text style={styles.cardTitle}>📦 Lost Item Owner</Text>
-//         <Text style={styles.cardSub}>Lost something? Find it here</Text>
-//       </TouchableOpacity>
-//     </View>
-//   );
-// }
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     padding: 20,
-//     justifyContent: "center",
-//     backgroundColor: "#F8FAFF",
-//   },
-//   title: {
-//     fontSize: 26,
-//     fontWeight: "800",
-//     textAlign: "center",
-//     marginBottom: 30,
-//   },
-//   card: {
-//     backgroundColor: "#fff",
-//     padding: 24,
-//     borderRadius: 20,
-//     marginBottom: 20,
-//     elevation: 5,
-//   },
-//   cardTitle: {
-//     fontSize: 20,
-//     fontWeight: "700",
-//   },
-//   cardSub: {
-//     marginTop: 6,
-//     color: "#555",
-//   },
-// });
 import {
   View,
   Text,
@@ -79,24 +6,42 @@ import {
   SafeAreaView,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 const PRIMARY = "#2563EB";
 const BG = "#F1F5FF";
 
 export default function ModeSelectionScreen({ navigation }) {
+  const { logout } = useContext(AuthContext);
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
+      {/* <View style={styles.header}>
         <Text style={styles.title}>Choose Your Mode</Text>
         <Text style={styles.subtitle}>Select how you want to use FindIt+</Text>
-      </View>
+      </View> */}
+      <View style={styles.header}>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Text style={styles.title}>Choose Your Mode</Text>
 
+          <TouchableOpacity onPress={logout}>
+            <Ionicons name="log-out-outline" size={26} color="red" />
+          </TouchableOpacity>
+        </View>
+
+        <Text style={styles.subtitle}>Select how you want to use FindIt+</Text>
+      </View>
       <View style={styles.cardContainer}>
         {/* Finder Card */}
         <TouchableOpacity
           style={[styles.card, { backgroundColor: "#E0F2FE" }]}
           activeOpacity={0.85}
-          onPress={() => navigation.replace("FinderStack")}
+          onPress={() => navigation.navigate("FinderStack")}
         >
           <Ionicons name="search-circle" size={40} color="#0284C7" />
           <View style={styles.textBox}>
@@ -111,7 +56,7 @@ export default function ModeSelectionScreen({ navigation }) {
         <TouchableOpacity
           style={[styles.card, { backgroundColor: "#FEF3C7" }]}
           activeOpacity={0.85}
-          onPress={() => navigation.replace("OwnerStack")}
+          onPress={() => navigation.navigate("OwnerStack")}
         >
           <Ionicons name="briefcase" size={40} color="#D97706" />
           <View style={styles.textBox}>

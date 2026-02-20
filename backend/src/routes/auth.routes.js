@@ -43,6 +43,7 @@ import {
   loginWithMobile,
   loginWithPassword,
   checkUserId,
+  updateProfile,
 } from "../controllers/auth.controller.js";
 
 const router = express.Router();
@@ -56,5 +57,5 @@ router.post("/register/check-userid", checkUserId);
 // Login
 router.post("/login/mobile", loginWithMobile);
 router.post("/login/password", loginWithPassword);
-
+router.put("/profile/update", updateProfile);
 export default router;

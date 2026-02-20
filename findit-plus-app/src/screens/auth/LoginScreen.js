@@ -99,8 +99,10 @@ export default function LoginScreen({ navigation }) {
 
         // login success
         // navigation.replace("ModeSelection");
+        // await login(data.user);
+        // navigation.navigate("ModeSelection");
         await login(data.user);
-        navigation.replace("ModeSelection");
+        // DO NOT navigate manually
       }
     } catch (err) {
       Alert.alert("Error", "Something went wrong");

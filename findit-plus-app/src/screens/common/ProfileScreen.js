@@ -10,24 +10,57 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
-
+import { Image } from "react-native";
+import * as ImagePicker from "expo-image-picker";
 const PRIMARY = "#2563EB";
 const BG = "#F8FAFF";
 
 export default function ProfileScreen({ navigation }) {
-  const { user, logout } = useContext(AuthContext);
+  const { user, logout, updateUser } = useContext(AuthContext);
 
   const handleLogout = async () => {
     await logout();
     navigation.replace("Login");
   };
+  const pickImage = async () => {
+    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
+    if (!permission.granted) {
+      Alert.alert("Permission required to access gallery");
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.7,
+    });
+
+    if (!result.canceled) {
+      const imageUri = result.assets[0].uri;
+      await updateUser({ profileImage: imageUri });
+    }
+  };
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
         {/* Header */}
         <View style={styles.header}>
-          <Ionicons name="person-circle" size={100} color={PRIMARY} />
+          <View style={styles.avatarContainer}>
+            {user?.profileImage ? (
+              <Image
+                source={{ uri: user.profileImage }}
+                style={styles.avatar}
+              />
+            ) : (
+              <Ionicons name="person-circle" size={110} color={PRIMARY} />
+            )}
+
+            <TouchableOpacity style={styles.addButton} onPress={pickImage}>
+              <Ionicons name="add" size={18} color="#fff" />
+            </TouchableOpacity>
+          </View>
           <Text style={styles.name}>{user?.fullName || "User Name"}</Text>
           <Text style={styles.userId}>@{user?.userId}</Text>
         </View>
@@ -35,7 +68,7 @@ export default function ProfileScreen({ navigation }) {
         {/* Info Card */}
         <View style={styles.infoCard}>
           <ProfileItem label="Mobile" value={user?.mobile} />
-          <ProfileItem label="Email" value={user?.email} />
+          {/* <ProfileItem label="Email" value={user?.email} /> */}
           <ProfileItem label="Address" value={user?.address} />
           <ProfileItem label="Pincode" value={user?.pincode} />
         </View>
@@ -144,5 +177,27 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: "700",
     fontSize: 16,
+  },
+  avatarContainer: {
+    position: "relative",
+  },
+
+  avatar: {
+    width: 110,
+    height: 110,
+    borderRadius: 55,
+  },
+
+  addButton: {
+    position: "absolute",
+    bottom: 0,
+    right: 0,
+    backgroundColor: PRIMARY,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    justifyContent: "center",
+    alignItems: "center",
+    elevation: 5,
   },
 });

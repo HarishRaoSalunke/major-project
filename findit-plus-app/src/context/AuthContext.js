@@ -36,7 +36,12 @@ export default function AuthProvider({ children }) {
     setUser(null);
     await AsyncStorage.removeItem("auth_user");
   };
-
+  /* ---------- UPDATE USER ---------- */
+  const updateUser = async (updatedData) => {
+    const newUser = { ...user, ...updatedData };
+    setUser(newUser);
+    await AsyncStorage.setItem("auth_user", JSON.stringify(newUser));
+  };
   return (
     <AuthContext.Provider
       value={{
@@ -45,6 +50,7 @@ export default function AuthProvider({ children }) {
         loading,
         login,
         logout,
+        updateUser, // 👈 ADD THIS
       }}
     >
       {children}
