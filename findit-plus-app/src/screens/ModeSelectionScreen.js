@@ -8,17 +8,17 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
+import { useTheme } from "../context/ThemeContext";
 const PRIMARY = "#2563EB";
 const BG = "#F1F5FF";
 
 export default function ModeSelectionScreen({ navigation }) {
   const { logout } = useContext(AuthContext);
+  const { colors } = useTheme();
   return (
-    <SafeAreaView style={styles.container}>
-      {/* <View style={styles.header}>
-        <Text style={styles.title}>Choose Your Mode</Text>
-        <Text style={styles.subtitle}>Select how you want to use FindIt+</Text>
-      </View> */}
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: colors.background }]}
+    >
       <View style={styles.header}>
         <View
           style={{
@@ -27,10 +27,12 @@ export default function ModeSelectionScreen({ navigation }) {
             alignItems: "center",
           }}
         >
-          <Text style={styles.title}>Choose Your Mode</Text>
+          <Text style={[styles.title, { color: colors.text }]}>
+            Choose Your Mode
+          </Text>
 
           <TouchableOpacity onPress={logout}>
-            <Ionicons name="log-out-outline" size={26} color="red" />
+            <Ionicons name="log-out-outline" size={26} color={colors.danger} />
           </TouchableOpacity>
         </View>
 
@@ -45,8 +47,11 @@ export default function ModeSelectionScreen({ navigation }) {
         >
           <Ionicons name="search-circle" size={40} color="#0284C7" />
           <View style={styles.textBox}>
-            <Text style={styles.cardTitle}>Lost Item Finder</Text>
-            <Text style={styles.cardSub}>
+            <Text style={[styles.cardTitle, { color: colors.text }]}>
+              Lost Item Finder
+            </Text>
+            <Text style={[styles.cardSub, { color: colors.subText }]}>
+              {" "}
               Found an item? Help return it to the owner.
             </Text>
           </View>

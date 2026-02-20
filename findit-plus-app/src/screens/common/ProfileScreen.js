@@ -12,10 +12,15 @@ import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { Image } from "react-native";
 import * as ImagePicker from "expo-image-picker";
+import { useTheme } from "../../context/ThemeContext";
+
 const PRIMARY = "#2563EB";
 const BG = "#F8FAFF";
-
+const HEADER_BG = "#F3F4F6";
+const HEADER_NAME = "#111827";
+const HEADER_USERNAME = "#6B7280";
 export default function ProfileScreen({ navigation }) {
+  const { colors } = useTheme();
   const { user, logout, updateUser } = useContext(AuthContext);
 
   const handleLogout = async () => {
@@ -43,10 +48,12 @@ export default function ProfileScreen({ navigation }) {
     }
   };
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: colors.background }]}
+    >
       <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
         {/* Header */}
-        <View style={styles.header}>
+        <View style={[styles.header, { backgroundColor: HEADER_BG }]}>
           <View style={styles.avatarContainer}>
             {user?.profileImage ? (
               <Image
@@ -61,12 +68,16 @@ export default function ProfileScreen({ navigation }) {
               <Ionicons name="add" size={18} color="#fff" />
             </TouchableOpacity>
           </View>
-          <Text style={styles.name}>{user?.fullName || "User Name"}</Text>
-          <Text style={styles.userId}>@{user?.userId}</Text>
+          <Text style={[styles.name, { color: HEADER_NAME }]}>
+            {user?.fullName || "User Name"}
+          </Text>
+          <Text style={[styles.userId, { color: HEADER_USERNAME }]}>
+            @{user?.userId}
+          </Text>
         </View>
 
         {/* Info Card */}
-        <View style={styles.infoCard}>
+        <View style={[styles.infoCard, { backgroundColor: colors.card }]}>
           <ProfileItem label="Mobile" value={user?.mobile} />
           {/* <ProfileItem label="Email" value={user?.email} /> */}
           <ProfileItem label="Address" value={user?.address} />
@@ -75,23 +86,29 @@ export default function ProfileScreen({ navigation }) {
 
         {/* Buttons */}
         <TouchableOpacity
-          style={styles.button}
+          style={[styles.button, { backgroundColor: colors.primary }]}
           onPress={() => navigation.navigate("EditProfile")}
         >
           <Ionicons name="create-outline" size={20} color="#fff" />
           <Text style={styles.buttonText}>Edit Profile</Text>
         </TouchableOpacity>
 
+        {/* <TouchableOpacity
+          style={[styles.button, { backgroundColor: colors.card }]}
+          onPress={() => navigation.navigate("Settings")}
+        >
+          <Ionicons name="settings-outline" size={20} color="#fff" />
+          <Text style={styles.buttonText}>Settings</Text>
+        </TouchableOpacity> */}
         <TouchableOpacity
-          style={[styles.button, { backgroundColor: "#6B7280" }]}
+          style={[styles.button, { backgroundColor: colors.primary }]}
           onPress={() => navigation.navigate("Settings")}
         >
           <Ionicons name="settings-outline" size={20} color="#fff" />
           <Text style={styles.buttonText}>Settings</Text>
         </TouchableOpacity>
-
         <TouchableOpacity
-          style={[styles.button, { backgroundColor: "#DC2626" }]}
+          style={[styles.button, { backgroundColor: colors.danger }]}
           onPress={() =>
             Alert.alert("Logout", "Are you sure?", [
               { text: "Cancel", style: "cancel" },
@@ -108,10 +125,12 @@ export default function ProfileScreen({ navigation }) {
 }
 
 function ProfileItem({ label, value }) {
+  const { colors } = useTheme();
+
   return (
     <View style={styles.item}>
-      <Text style={styles.label}>{label}</Text>
-      <Text style={styles.value}>{value || "-"}</Text>
+      <Text style={[styles.label, { color: colors.subText }]}>{label}</Text>
+      <Text style={[styles.value, { color: colors.text }]}>{value || "-"}</Text>
     </View>
   );
 }
@@ -119,15 +138,16 @@ function ProfileItem({ label, value }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: BG,
     paddingHorizontal: 20,
   },
 
   header: {
     alignItems: "center",
     marginVertical: 20,
+    paddingVertical: 25,
+    borderRadius: 20,
+    elevation: 4,
   },
-
   name: {
     fontSize: 22,
     fontWeight: "800",
@@ -135,12 +155,10 @@ const styles = StyleSheet.create({
   },
 
   userId: {
-    color: "#6B7280",
     marginTop: 4,
   },
 
   infoCard: {
-    backgroundColor: "#fff",
     borderRadius: 20,
     padding: 20,
     elevation: 5,
@@ -153,7 +171,6 @@ const styles = StyleSheet.create({
 
   label: {
     fontSize: 13,
-    color: "#6B7280",
   },
 
   value: {
@@ -167,7 +184,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     gap: 10,
-    backgroundColor: PRIMARY,
     paddingVertical: 14,
     borderRadius: 14,
     marginBottom: 15,
@@ -178,6 +194,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     fontSize: 16,
   },
+
   avatarContainer: {
     position: "relative",
   },
@@ -192,7 +209,6 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 0,
     right: 0,
-    backgroundColor: PRIMARY,
     width: 30,
     height: 30,
     borderRadius: 15,

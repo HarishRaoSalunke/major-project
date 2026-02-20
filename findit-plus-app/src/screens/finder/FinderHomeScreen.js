@@ -1,48 +1,3 @@
-// import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-
-// export default function FinderHomeScreen({ navigation }) {
-//   return (
-//     <View style={styles.container}>
-//       <Text style={styles.title}>Lost Item Finder</Text>
-
-//       <TouchableOpacity style={styles.card}>
-//         <Text style={styles.cardTitle}>➕ Post Found Item</Text>
-//       </TouchableOpacity>
-
-//       <TouchableOpacity style={styles.card}>
-//         <Text style={styles.cardTitle}>📋 View Lost Item Requests</Text>
-//       </TouchableOpacity>
-
-//       <TouchableOpacity style={styles.card}>
-//         <Text style={styles.cardTitle}>📝 My Found Posts</Text>
-//       </TouchableOpacity>
-//     </View>
-//   );
-// }
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     padding: 20,
-//     backgroundColor: "#F8FAFF",
-//   },
-//   title: {
-//     fontSize: 26,
-//     fontWeight: "800",
-//     marginBottom: 20,
-//   },
-//   card: {
-//     backgroundColor: "#fff",
-//     padding: 20,
-//     borderRadius: 18,
-//     marginBottom: 15,
-//     elevation: 4,
-//   },
-//   cardTitle: {
-//     fontSize: 18,
-//     fontWeight: "600",
-//   },
-// });
 import {
   View,
   Text,
@@ -51,16 +6,21 @@ import {
   SafeAreaView,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-
+import { useTheme } from "../../context/ThemeContext";
 const PRIMARY = "#2563EB";
 const BG = "#F1F5FF";
 
 export default function FinderHomeScreen({ navigation }) {
+  const { colors } = useTheme();
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: colors.background }]}
+    >
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.title}>Lost Item Finder</Text>
+        <Text style={[styles.title, { color: colors.text }]}>
+          Lost Item Finder
+        </Text>
         <Ionicons name="search-circle" size={34} color={PRIMARY} />
       </View>
 

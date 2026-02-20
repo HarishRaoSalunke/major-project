@@ -182,7 +182,7 @@ export const completeRegistration = async (req, res) => {
 };
 // UPDATE PROFILE
 export const updateProfile = async (req, res) => {
-  const { userId, address, pincode } = req.body;
+  const { userId, fullName, newUserId, address, pincode } = req.body;
 
   try {
     const user = await User.findOne({ userId });
@@ -190,7 +190,14 @@ export const updateProfile = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-
+    if (newUserId && newUserId !== user.userId) {
+      const existing = await User.findOne({ userId: newUserId });
+      if (existing) {
+        return res.status(400).json({ message: "User ID already taken" });
+      }
+      user.userId = newUserId;
+    }
+    user.fullName = fullName;
     user.address = address;
     user.pincode = pincode;
 
