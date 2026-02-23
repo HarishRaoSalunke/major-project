@@ -79,7 +79,7 @@ export default function PostLostItemScreen({ navigation }) {
       formData.append("address", address);
       formData.append("pincode", pincode);
       formData.append("userId", user._id);
-
+      formData.append("type", "lost");
       if (image) {
         formData.append("image", {
           uri: image,

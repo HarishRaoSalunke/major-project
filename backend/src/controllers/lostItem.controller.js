@@ -25,6 +25,7 @@ export const createLostItem = async (req, res) => {
       address: req.body.address,
       pincode: req.body.pincode,
       userId: req.body.userId,
+      type: req.body.type, // IMPORTANT
       image: req.file ? req.file.filename : null,
     });
 
@@ -39,5 +40,62 @@ export const createLostItem = async (req, res) => {
       message: "Server error",
       error: error.message,
     });
+  }
+};
+export const getLostItems = async (req, res) => {
+  try {
+    const { category, date } = req.query;
+
+    let filter = { type: "lost" };
+
+    // Category filter
+    if (category && category !== "All") {
+      filter.category = category;
+    }
+
+    // Date filter
+    if (date && date !== "All") {
+      const now = new Date();
+      let startDate;
+
+      if (date === "Today") {
+        startDate = new Date();
+        startDate.setHours(0, 0, 0, 0);
+      }
+
+      if (date === "This Week") {
+        startDate = new Date();
+        startDate.setDate(now.getDate() - 7);
+      }
+
+      if (date === "This Month") {
+        startDate = new Date();
+        startDate.setMonth(now.getMonth() - 1);
+      }
+
+      if (startDate) {
+        filter.createdAt = { $gte: startDate };
+      }
+    }
+
+    const lostItems = await LostItem.find(filter).sort({ createdAt: -1 });
+
+    res.json(lostItems);
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+export const getMyFoundPosts = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const posts = await LostItem.find({
+      userId,
+      type: "found",
+    }).sort({ createdAt: -1 });
+
+    res.json(posts);
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
   }
 };

@@ -13,9 +13,18 @@ const lostItemSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
+    // status: {
+    //   type: String,
+    //   default: "searching",
+    // },
+    type: {
+      type: String,
+      enum: ["lost", "found"],
+      required: true,
+    },
     status: {
       type: String,
-      default: "searching",
+      default: "active",
     },
   },
   { timestamps: true },
