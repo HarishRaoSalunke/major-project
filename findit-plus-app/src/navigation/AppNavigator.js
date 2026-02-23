@@ -38,10 +38,28 @@ export default function AppNavigator() {
         </>
       ) : (
         <>
-          <Stack.Screen name="ModeSelection" component={ModeSelectionScreen} />
-          <Stack.Screen name="FinderStack" component={FinderNavigator} />
-          <Stack.Screen name="OwnerStack" component={OwnerNavigator} />
-          <Stack.Screen name="EditProfile" component={EditProfileScreen} />
+          <Stack.Screen
+            name="ModeSelection"
+            component={ModeSelectionScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="FinderStack"
+            component={FinderNavigator}
+            options={{ headerShown: false }}
+          />
+
+          <Stack.Screen
+            name="OwnerStack"
+            component={OwnerNavigator}
+            options={{ headerShown: false }}
+          />
+
+          <Stack.Screen
+            name="EditProfile"
+            component={EditProfileScreen}
+            options={{ headerShown: false }}
+          />
           <Stack.Screen name="Settings" component={SettingsScreen} />
         </>
       )}
