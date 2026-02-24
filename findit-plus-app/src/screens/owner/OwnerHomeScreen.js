@@ -69,6 +69,13 @@ export default function OwnerHomeScreen({ navigation }) {
           <Text style={styles.navText}>Profile</Text>
         </TouchableOpacity>
       </View>
+      {/* Floating Support Chat Button */}
+      <TouchableOpacity
+        style={styles.chatButton}
+        onPress={() => navigation.navigate("SupportChat")}
+      >
+        <Ionicons name="chatbubble-ellipses" size={26} color="#fff" />
+      </TouchableOpacity>
     </SafeAreaView>
   );
 }
@@ -136,5 +143,21 @@ const styles = StyleSheet.create({
     marginTop: 4,
     color: "#555",
     fontWeight: "600",
+  },
+  chatButton: {
+    position: "absolute",
+    bottom: 80, // above bottom nav
+    alignSelf: "center",
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: "#7C3AED",
+    justifyContent: "center",
+    alignItems: "center",
+    elevation: 8,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
   },
 });

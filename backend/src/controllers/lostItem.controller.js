@@ -99,3 +99,48 @@ export const getMyFoundPosts = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+export const getFoundMatchesForOwner = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // 1️⃣ Get all lost posts of this owner
+    const lostPosts = await LostItem.find({
+      userId,
+      type: "lost",
+    });
+
+    if (!lostPosts.length) {
+      return res.json([]);
+    }
+
+    // 2️⃣ Extract categories from lost posts
+    const categories = lostPosts.map((item) => item.category);
+
+    // 3️⃣ Find matching found items
+    const foundMatches = await LostItem.find({
+      type: "found",
+      category: { $in: categories },
+      status: "active",
+    }).sort({ createdAt: -1 });
+
+    res.json(foundMatches);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+export const getMyLostPosts = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const posts = await LostItem.find({
+      userId,
+      type: "lost",
+    }).sort({ createdAt: -1 });
+
+    res.json(posts);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
