@@ -16,14 +16,22 @@ export default function OwnerHomeScreen({ navigation }) {
     <SafeAreaView
       style={[styles.container, { backgroundColor: colors.background }]}
     >
-      {/* Header */}
+      {/* Header
       <View style={styles.header}>
         <Text style={[styles.title, { color: colors.text }]}>
           Lost Item Owner
         </Text>
         <Ionicons name="briefcase" size={34} color={PRIMARY} />
-      </View>
+      </View> */}
+      <View style={styles.header}>
+        <Text style={[styles.title, { color: colors.text }]}>
+          Lost Item Owner
+        </Text>
 
+        <TouchableOpacity onPress={() => navigation.navigate("Notifications")}>
+          <Ionicons name="notifications-outline" size={28} color={PRIMARY} />
+        </TouchableOpacity>
+      </View>
       {/* Cards */}
       <View style={styles.cardContainer}>
         <TouchableOpacity
@@ -52,8 +60,15 @@ export default function OwnerHomeScreen({ navigation }) {
           <Ionicons name="document-text" size={32} color="#BE185D" />
           <Text style={styles.cardTitle}>My Lost Posts</Text>
         </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.card, { backgroundColor: "#E0E7FF" }]}
+          activeOpacity={0.85}
+          onPress={() => navigation.navigate("MyLostPosts")}
+        >
+          <Ionicons name="sparkles" size={32} color="#4F46E5" />
+          <Text style={styles.cardTitle}>View Smart Matches</Text>
+        </TouchableOpacity>
       </View>
-
       {/* Bottom Navigation */}
       <View style={styles.bottomNav}>
         <TouchableOpacity style={styles.navItem}>

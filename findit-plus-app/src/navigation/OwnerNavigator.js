@@ -5,6 +5,8 @@ import PostLostItemScreen from "../screens/owner/PostLostItemScreen";
 import ViewFoundItemsScreen from "../screens/owner/ViewFoundItemsScreen";
 import MyLostPostsScreen from "../screens/owner/MyLostPostsScreen";
 import SupportChatScreen from "../screens/common/SupportChatScreen";
+import MatchedFoundItemsScreen from "../screens/owner/MatchedFoundItemsScreen";
+import NotificationScreen from "../screens/common/NotificationScreen";
 const Stack = createNativeStackNavigator();
 
 export default function OwnerNavigator() {
@@ -40,6 +42,16 @@ export default function OwnerNavigator() {
         name="SupportChat"
         component={SupportChatScreen}
         options={{ title: "Support Chat" }}
+      />
+      <Stack.Screen
+        name="MatchedFoundItems"
+        component={MatchedFoundItemsScreen}
+        options={{ title: "AI Matches" }}
+      />
+      <Stack.Screen
+        name="Notifications"
+        component={NotificationScreen}
+        options={{ title: "Notifications" }}
       />
     </Stack.Navigator>
   );

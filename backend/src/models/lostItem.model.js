@@ -26,6 +26,38 @@ const lostItemSchema = new mongoose.Schema(
       type: String,
       default: "active",
     },
+    embedding: {
+      type: [Number], // text vector
+    },
+
+    imageEmbedding: {
+      type: [Number], // image vector
+    },
+
+    coordinates: {
+      lat: Number,
+      lng: Number,
+    },
+
+    matches: [
+      {
+        itemId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "LostItem",
+        },
+        score: Number,
+        breakdown: {
+          textScore: Number,
+          imageScore: Number,
+          locationScore: Number,
+          timeScore: Number,
+        },
+        matchedAt: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
   },
   { timestamps: true },
 );

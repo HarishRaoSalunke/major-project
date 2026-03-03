@@ -4,6 +4,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import authRoutes from "./src/routes/auth.routes.js";
 import lostItemRoutes from "./src/routes/lostItem.routes.js";
+import notificationRoutes from "./src/routes/notification.routes.js";
 dotenv.config();
 
 const app = express();
@@ -14,6 +15,7 @@ app.use("/uploads", express.static("uploads"));
 // mount auth routes
 app.use("/api/auth", authRoutes);
 app.use("/api/lost", lostItemRoutes);
+app.use("/api/notifications", notificationRoutes);
 console.log("MONGO_URI:", process.env.MONGO_URI);
 mongoose
   .connect(process.env.MONGO_URI)

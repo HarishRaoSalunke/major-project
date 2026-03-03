@@ -12,7 +12,7 @@ import {
 import { useState, useContext } from "react";
 import * as ImagePicker from "expo-image-picker";
 import { useTheme } from "../../context/ThemeContext";
-
+import * as Location from "expo-location";
 import { AuthContext } from "../../context/AuthContext";
 import axios from "axios";
 import { BASE_URL } from "../../utils/constants";
@@ -39,7 +39,7 @@ export default function PostFoundItemScreen({ navigation }) {
   const [pincode, setPincode] = useState("");
   const [image, setImage] = useState(null);
   const [categoryModalVisible, setCategoryModalVisible] = useState(false);
-
+  const [coords, setCoords] = useState(null);
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -86,7 +86,14 @@ export default function PostFoundItemScreen({ navigation }) {
       Alert.alert("Error", "Please select category");
       return;
     }
+    const { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== "granted") {
+      Alert.alert("Location permission required");
+      return;
+    }
 
+    const locationData = await Location.getCurrentPositionAsync({});
+    setCoords(locationData.coords);
     try {
       const formData = new FormData();
 
@@ -98,7 +105,8 @@ export default function PostFoundItemScreen({ navigation }) {
       formData.append("pincode", pincode);
       formData.append("type", "found"); //
       formData.append("userId", user._id);
-
+      formData.append("lat", locationData.coords.latitude);
+      formData.append("lng", locationData.coords.longitude);
       if (image) {
         formData.append("image", {
           uri: image,

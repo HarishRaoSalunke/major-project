@@ -9,12 +9,13 @@ import {
   Alert,
   Modal,
   FlatList,
+  Image,
 } from "react-native";
 import { useState, useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
 import * as ImagePicker from "expo-image-picker";
-import { Image } from "react-native";
+import * as Location from "expo-location";
 const API = "http://192.168.29.9:5000/api/lost";
 
 export default function PostLostItemScreen({ navigation }) {
@@ -52,7 +53,13 @@ export default function PostLostItemScreen({ navigation }) {
       Alert.alert("Error", "Please fill required fields");
       return;
     }
+    const { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== "granted") {
+      Alert.alert("Location permission required");
+      return;
+    }
 
+    const locationData = await Location.getCurrentPositionAsync({});
     try {
       //   const res = await fetch(`${API}/create`, {
       //     method: "POST",
@@ -79,6 +86,8 @@ export default function PostLostItemScreen({ navigation }) {
       formData.append("address", address);
       formData.append("pincode", pincode);
       formData.append("userId", user._id);
+      formData.append("lat", locationData.coords.latitude);
+      formData.append("lng", locationData.coords.longitude);
       formData.append("type", "lost");
       if (image) {
         formData.append("image", {

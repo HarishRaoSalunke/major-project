@@ -1,5 +1,7 @@
 import LostItem from "../models/lostItem.model.js";
-
+import { processMatching } from "../services/aiMatching.service.js";
+import { generateTextEmbedding } from "../services/embedding.service.js";
+import { generateImageEmbedding } from "../services/imageMatching.service.js";
 // export const createLostItem = async (req, res) => {
 //   try {
 //     const lostItem = await LostItem.create(req.body);
@@ -27,10 +29,31 @@ export const createLostItem = async (req, res) => {
       userId: req.body.userId,
       type: req.body.type, // IMPORTANT
       image: req.file ? req.file.filename : null,
+      coordinates: {
+        lat: req.body.lat ? Number(req.body.lat) : null,
+        lng: req.body.lng ? Number(req.body.lng) : null,
+      },
     });
 
     await newLostItem.save();
+    // 1️⃣ Generate text embedding
+    const textEmbedding = await generateTextEmbedding(
+      `${newLostItem.title} ${newLostItem.description} ${newLostItem.category}`,
+    );
 
+    newLostItem.embedding = textEmbedding;
+
+    // 2️⃣ Generate image embedding (if image exists)
+    if (newLostItem.image) {
+      const imageEmbedding = await generateImageEmbedding(newLostItem.image);
+      newLostItem.imageEmbedding = imageEmbedding;
+    }
+
+    // Save again with embeddings
+    await newLostItem.save();
+
+    // 3️⃣ Run matching
+    await processMatching(newLostItem);
     res.status(201).json(newLostItem);
   } catch (error) {
     console.log("==== ERROR OCCURRED ====");
@@ -141,6 +164,17 @@ export const getMyLostPosts = async (req, res) => {
     res.json(posts);
   } catch (error) {
     console.log(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+export const getItemMatches = async (req, res) => {
+  try {
+    const { itemId } = req.params;
+
+    const item = await LostItem.findById(itemId).populate("matches.itemId");
+
+    res.json(item.matches);
+  } catch (error) {
     res.status(500).json({ message: "Server error" });
   }
 };

@@ -17,11 +17,20 @@ export default function FinderHomeScreen({ navigation }) {
       style={[styles.container, { backgroundColor: colors.background }]}
     >
       {/* Header */}
-      <View style={styles.header}>
+      {/* <View style={styles.header}>
         <Text style={[styles.title, { color: colors.text }]}>
           Lost Item Finder
         </Text>
         <Ionicons name="search-circle" size={34} color={PRIMARY} />
+      </View> */}
+      <View style={styles.header}>
+        <Text style={[styles.title, { color: colors.text }]}>
+          Lost Item Finder
+        </Text>
+
+        <TouchableOpacity onPress={() => navigation.navigate("Notifications")}>
+          <Ionicons name="notifications-outline" size={28} color={PRIMARY} />
+        </TouchableOpacity>
       </View>
 
       {/* Cards */}
@@ -51,6 +60,14 @@ export default function FinderHomeScreen({ navigation }) {
         >
           <Ionicons name="document-text" size={32} color="#16A34A" />
           <Text style={styles.cardTitle}>My Found Posts</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.card, { backgroundColor: "#FECACA" }]}
+          activeOpacity={0.8}
+          onPress={() => navigation.navigate("MyFoundPosts")}
+        >
+          <Ionicons name="sparkles" size={32} color="#DC2626" />
+          <Text style={styles.cardTitle}>View AI Matches</Text>
         </TouchableOpacity>
       </View>
 

@@ -2,10 +2,13 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import FinderHomeScreen from "../screens/finder/FinderHomeScreen";
 import ProfileScreen from "../screens/common/ProfileScreen";
 import { useTheme } from "../context/ThemeContext";
-const Stack = createNativeStackNavigator();
 import PostFoundItemScreen from "../screens/finder/PostFoundItemScreen";
 import LostRequestsScreen from "../screens/finder/LostRequestsScreen";
 import MyFoundPostsScreen from "../screens/finder/MyFoundPostsScreen";
+import MatchedLostItemsScreen from "../screens/finder/MatchedLostItemsScreen";
+import NotificationScreen from "../screens/common/NotificationScreen";
+const Stack = createNativeStackNavigator();
+
 export default function FinderNavigator() {
   const { colors } = useTheme();
   return (
@@ -47,6 +50,16 @@ export default function FinderNavigator() {
         name="MyFoundPosts"
         component={MyFoundPostsScreen}
         options={{ title: "My Found Posts" }}
+      />
+      <Stack.Screen
+        name="MatchedLostItems"
+        component={MatchedLostItemsScreen}
+        options={{ title: "AI Matches" }}
+      />
+      <Stack.Screen
+        name="Notifications"
+        component={NotificationScreen}
+        options={{ title: "Notifications" }}
       />
     </Stack.Navigator>
   );
