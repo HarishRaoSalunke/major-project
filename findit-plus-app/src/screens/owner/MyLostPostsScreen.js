@@ -43,7 +43,7 @@ export default function MyLostPostsScreen({ navigation }) {
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <FlatList
         data={posts}
-        keyExtractor={(item) => item._id}
+        keyExtractor={(item) => item.itemId?._id || Math.random().toString()}
         ListEmptyComponent={
           <Text style={{ textAlign: "center", marginTop: 50 }}>
             No Lost Posts Yet

@@ -63,7 +63,7 @@ export default function OwnerHomeScreen({ navigation }) {
         <TouchableOpacity
           style={[styles.card, { backgroundColor: "#E0E7FF" }]}
           activeOpacity={0.85}
-          onPress={() => navigation.navigate("MyLostPosts")}
+          onPress={() => navigation.navigate("MatchedFoundItems")}
         >
           <Ionicons name="sparkles" size={32} color="#4F46E5" />
           <Text style={styles.cardTitle}>View Smart Matches</Text>

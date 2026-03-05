@@ -12,13 +12,17 @@ import { MATCHES_URL } from "../../utils/constants";
 import { useTheme } from "../../context/ThemeContext";
 
 export default function MatchedFoundItemsScreen({ route }) {
-  const { itemId } = route.params;
+  const itemId = route?.params?.itemId;
   const { colors } = useTheme();
   const [matches, setMatches] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchMatches();
+    if (itemId) {
+      fetchMatches();
+    } else {
+      setLoading(false);
+    }
   }, []);
 
   const fetchMatches = async () => {
@@ -49,7 +53,7 @@ export default function MatchedFoundItemsScreen({ route }) {
   return (
     <FlatList
       data={matches}
-      keyExtractor={(item) => item._id}
+      keyExtractor={(item, index) => item.itemId?._id || index.toString()}
       contentContainerStyle={{ padding: 16 }}
       ListEmptyComponent={
         <Text style={{ textAlign: "center", marginTop: 40 }}>
@@ -76,10 +80,12 @@ export default function MatchedFoundItemsScreen({ route }) {
           </Text>
 
           <View style={styles.breakdown}>
-            <Text>Text: {item.breakdown.textScore?.toFixed(0)}%</Text>
-            <Text>Image: {item.breakdown.imageScore?.toFixed(0)}%</Text>
-            <Text>Location: {item.breakdown.locationScore?.toFixed(0)}%</Text>
-            <Text>Time: {item.breakdown.timeScore?.toFixed(0)}%</Text>
+            <Text>Text: {item.breakdown?.textScore?.toFixed(0) || 0}%</Text>
+            <Text>Image: {item.breakdown?.imageScore?.toFixed(0) || 0}%</Text>
+            <Text>
+              Location: {item.breakdown?.locationScore?.toFixed(0) || 0}%
+            </Text>
+            <Text>Time: {item.breakdown?.timeScore?.toFixed(0) || 0}%</Text>
           </View>
         </View>
       )}

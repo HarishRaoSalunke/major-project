@@ -64,7 +64,7 @@ export default function FinderHomeScreen({ navigation }) {
         <TouchableOpacity
           style={[styles.card, { backgroundColor: "#FECACA" }]}
           activeOpacity={0.8}
-          onPress={() => navigation.navigate("MyFoundPosts")}
+          onPress={() => navigation.navigate("MatchedLostItems")}
         >
           <Ionicons name="sparkles" size={32} color="#DC2626" />
           <Text style={styles.cardTitle}>View AI Matches</Text>

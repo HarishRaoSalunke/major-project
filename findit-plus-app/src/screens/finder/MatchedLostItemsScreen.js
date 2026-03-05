@@ -12,17 +12,22 @@ import { MATCHES_URL } from "../../utils/constants";
 import { useTheme } from "../../context/ThemeContext";
 
 export default function MatchedLostItemsScreen({ route }) {
-  const { itemId } = route.params;
+  const itemId = route?.params?.itemId;
   const { colors } = useTheme();
   const [matches, setMatches] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchMatches();
+    if (itemId) {
+      fetchMatches();
+    } else {
+      setLoading(false);
+    }
   }, []);
-
   const fetchMatches = async () => {
     try {
+      if (!itemId) return;
+
       const res = await axios.get(`${MATCHES_URL}/${itemId}`);
       setMatches(res.data);
     } catch (error) {
