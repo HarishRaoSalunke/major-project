@@ -15,8 +15,12 @@ export const geoScore = (coord1, coord2) => {
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   const distance = R * c;
 
-  if (distance <= 2) return 100;
-  if (distance <= 5) return 70;
-  if (distance <= 10) return 40;
-  return 10;
+  // if (distance <= 2) return 100;
+  // if (distance <= 5) return 70;
+  // if (distance <= 10) return 40;
+  // return 10;
+  if (distance <= 2) return 1;
+  if (distance <= 5) return 0.7;
+  if (distance <= 10) return 0.4;
+  return 0.1;
 };

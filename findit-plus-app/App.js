@@ -26,7 +26,7 @@ import {
   DefaultTheme,
   DarkTheme,
 } from "@react-navigation/native";
-
+import * as Notifications from "expo-notifications";
 import AppNavigator from "./src/navigation/AppNavigator";
 import AuthProvider from "./src/context/AuthContext";
 import { RegisterProvider } from "./src/context/RegisterContext";
@@ -54,7 +54,13 @@ function ThemedNavigation() {
     </NavigationContainer>
   );
 }
-
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
 export default function App() {
   return (
     <ThemeProvider>

@@ -38,12 +38,18 @@ export default function MyLostPostsScreen({ navigation }) {
     if (status === "closed") return "#6B7280";
     return "#2563EB";
   };
-
+  const getStatusText = (status) => {
+    if (status === "active") return "Active";
+    if (status === "matched") return "Matched";
+    if (status === "returned") return "Returned";
+    if (status === "closed") return "Closed";
+    return "Active";
+  };
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <FlatList
         data={posts}
-        keyExtractor={(item) => item.itemId?._id || Math.random().toString()}
+        keyExtractor={(item) => item._id}
         ListEmptyComponent={
           <Text style={{ textAlign: "center", marginTop: 50 }}>
             No Lost Posts Yet
@@ -52,7 +58,11 @@ export default function MyLostPostsScreen({ navigation }) {
         renderItem={({ item }) => (
           <TouchableOpacity
             style={styles.card}
-            onPress={() => navigation.navigate("ViewFoundItems")}
+            onPress={() =>
+              navigation.navigate("MatchedFoundItems", {
+                itemId: item._id,
+              })
+            }
           >
             {item.image && (
               <Image
@@ -74,7 +84,7 @@ export default function MyLostPostsScreen({ navigation }) {
                 ]}
               >
                 <Text style={styles.statusText}>
-                  {item.status.toUpperCase()}
+                  {getStatusText(item.status)}
                 </Text>
               </View>
 

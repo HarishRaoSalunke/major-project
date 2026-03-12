@@ -7,6 +7,7 @@ import LostRequestsScreen from "../screens/finder/LostRequestsScreen";
 import MyFoundPostsScreen from "../screens/finder/MyFoundPostsScreen";
 import MatchedLostItemsScreen from "../screens/finder/MatchedLostItemsScreen";
 import NotificationScreen from "../screens/common/NotificationScreen";
+import TransactionScreen from "../screens/common/TransactionScreen";
 const Stack = createNativeStackNavigator();
 
 export default function FinderNavigator() {
@@ -55,6 +56,11 @@ export default function FinderNavigator() {
         name="MatchedLostItems"
         component={MatchedLostItemsScreen}
         options={{ title: "AI Matches" }}
+      />
+       <Stack.Screen
+        name="TransactionScreen"
+        component={TransactionScreen}
+        options={{ title: "Return Item" }}
       />
       <Stack.Screen
         name="Notifications"

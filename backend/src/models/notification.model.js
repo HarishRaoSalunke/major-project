@@ -7,12 +7,22 @@ const notificationSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+
     title: String,
+
     message: String,
+
+    type: {
+      type: String,
+      enum: ["match", "system"],
+      default: "match",
+    },
+
     itemId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "LostItem",
     },
+
     isRead: {
       type: Boolean,
       default: false,

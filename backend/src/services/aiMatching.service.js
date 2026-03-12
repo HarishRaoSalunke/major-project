@@ -11,6 +11,7 @@ export const processMatching = async (newItem) => {
 
     const candidates = await LostItem.find({
       type: oppositeType,
+      category: newItem.category,
       status: "active",
     });
 
@@ -44,6 +45,7 @@ export const processMatching = async (newItem) => {
         locationScore,
         timeScore,
       );
+      console.log("Matching Score:", finalScore);
       const alreadyMatched = newItem.matches.some(
         (m) => m.itemId.toString() === candidate._id.toString(),
       );
@@ -54,7 +56,7 @@ export const processMatching = async (newItem) => {
       //       breakdown,
       //     });
 
-      if (!alreadyMatched && finalScore > 60) {
+      if (!alreadyMatched && finalScore > 45) {
         // Push to new item
         newItem.matches.push({
           itemId: candidate._id,
@@ -69,15 +71,21 @@ export const processMatching = async (newItem) => {
           breakdown,
         });
 
+        // 🔔 Mark both items as matched
+        newItem.status = "matched";
+        candidate.status = "matched";
+        newItem.matchedUserId = candidate.userId;
+        candidate.matchedUserId = newItem.userId;
         await candidate.save();
+        await newItem.save();
         if (newItem.type === "lost") {
           await notifyMatch(newItem, candidate, finalScore);
         } else {
           await notifyMatch(candidate, newItem, finalScore);
         }
+        break;
       }
     }
-
     await newItem.save();
   } catch (error) {
     console.log("AI Matching Error:", error);

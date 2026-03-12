@@ -2,6 +2,9 @@ import LostItem from "../models/lostItem.model.js";
 import { processMatching } from "../services/aiMatching.service.js";
 import { generateTextEmbedding } from "../services/embedding.service.js";
 import { generateImageEmbedding } from "../services/imageMatching.service.js";
+
+import calculateMatchScore from "../utils/matchScore.js";
+
 // export const createLostItem = async (req, res) => {
 //   try {
 //     const lostItem = await LostItem.create(req.body);
@@ -171,9 +174,85 @@ export const getItemMatches = async (req, res) => {
   try {
     const { itemId } = req.params;
 
-    const item = await LostItem.findById(itemId).populate("matches.itemId");
+    const item = await LostItem.findById(itemId).populate({
+      path: "matches.itemId",
+      model: "LostItem",
+    });
 
     res.json(item.matches);
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const findMatches = async (newItem) => {
+  const oppositeType = newItem.type === "lost" ? "found" : "lost";
+
+  const items = await LostItem.find({
+    type: oppositeType,
+    category: newItem.category,
+  });
+
+  const matches = [];
+
+  for (let item of items) {
+    const score = calculateMatchScore(newItem, item);
+
+    if (score > 0.6) {
+      matches.push({
+        item,
+        score,
+      });
+    }
+  }
+
+  return matches;
+};
+export const getMatches = async (req, res) => {
+  const { userId, type } = req.query;
+
+  const items = await LostItem.find({
+    userId,
+    type,
+  });
+
+  const oppositeType = type === "lost" ? "found" : "lost";
+
+  const otherItems = await LostItem.find({
+    type: oppositeType,
+  });
+
+  const matches = [];
+
+  for (let item of items) {
+    for (let other of otherItems) {
+      const score = calculateMatchScore(item, other);
+
+      if (score > 0.6) {
+        matches.push({
+          lostItem: item,
+          foundItem: other,
+          score,
+        });
+      }
+    }
+  }
+
+  res.json(matches);
+};
+export const getMatchCount = async (req, res) => {
+  try {
+    const { itemId } = req.params;
+
+    const item = await LostItem.findById(itemId);
+
+    if (!item) {
+      return res.status(404).json({ message: "Item not found" });
+    }
+
+    res.json({
+      count: item.matches.length,
+    });
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }

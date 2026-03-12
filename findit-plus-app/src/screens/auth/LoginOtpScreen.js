@@ -96,7 +96,7 @@ import { AuthContext } from "../../context/AuthContext";
 const PRIMARY = "#2563EB";
 const BG_TOP = "#EEF2FF";
 const BG_BOTTOM = "#FFFFFF";
-const API = "http://192.168.29.9:5000/api/auth";
+const API = "http://10.40.107.8:5000/api/auth";
 
 export default function LoginOtpScreen({ route }) {
   const { mobile } = route.params;

@@ -9,13 +9,14 @@ import {
   Platform,
 } from "react-native";
 import { useState, useContext } from "react";
-
+// import registerForPushNotifications from "../../utils/registerForPushNotifications";
 import { AuthContext } from "../../context/AuthContext";
+import showLocalNotification from "../../utils/showLocalNotification";
 const PRIMARY = "#2563EB";
 const SECONDARY = "#60A5FA";
 const BG_TOP = "#EEF2FF";
 const BG_BOTTOM = "#FFFFFF";
-const API_BASE = "http://192.168.29.9:5000/api/auth";
+const API_BASE = "http://10.40.107.8:5000/api/auth";
 
 export default function LoginScreen({ navigation }) {
   const [mode, setMode] = useState("mobile");
@@ -43,15 +44,23 @@ export default function LoginScreen({ navigation }) {
           Alert.alert("Invalid", "Enter a valid 10-digit mobile number");
           return;
         }
-
+        // const expoPushToken = await  registerForPushNotifications();
+        // console.log("Push Token:", expoPushToken);
         const res = await fetch(`${API_BASE}/login/mobile`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ mobile }),
+          body: JSON.stringify({
+            mobile,
+          }),
         });
 
         const data = await res.json();
+        console.log("Server response:", data);
 
+        // show OTP notification when app is open
+        if (data.otp) {
+          showLocalNotification("FindIt+ OTP", `Your OTP is ${data.otp}`);
+        }
         if (data.code === "USER_NOT_FOUND") {
           Alert.alert("Not Registered", "Please register first", [
             {

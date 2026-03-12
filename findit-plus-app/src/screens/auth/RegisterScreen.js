@@ -11,8 +11,9 @@ import { useContext, useState } from "react";
 import * as Location from "expo-location";
 import { RegisterContext } from "../../context/RegisterContext";
 import { Ionicons } from "@expo/vector-icons";
-
-const API = "http://192.168.29.9:5000/api/auth";
+import showLocalNotification from "../../utils/showLocalNotification";
+// import registerForPushNotifications from "../../utils/registerForPushNotifications";
+const API = "http://10.40.107.8:5000/api/auth";
 
 export default function RegisterScreen({ navigation }) {
   const { registerData, updateField } = useContext(RegisterContext);
@@ -44,20 +45,25 @@ export default function RegisterScreen({ navigation }) {
         Alert.alert("Error", "Enter valid 10 digit mobile number");
         return;
       }
-
+      // const expoPushToken = await registerForPushNotifications();
       const res = await fetch(`${API}/register/send-otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mobile: registerData.mobile }),
+        body: JSON.stringify({
+          mobile: registerData.mobile,
+        }),
       });
 
       const data = await res.json();
+      // show OTP notification when app is open
 
       if (!res.ok) {
         Alert.alert("Error", data.message || "Failed to send OTP");
         return;
       }
-
+      if (data.otp) {
+        await showLocalNotification("FindIt+ OTP", `Your OTP is ${data.otp}`);
+      }
       Alert.alert("OTP Sent", "OTP has been sent to your mobile number");
       setOtpSent(true);
     } catch (error) {

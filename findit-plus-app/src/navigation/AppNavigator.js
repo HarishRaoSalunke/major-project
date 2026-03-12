@@ -11,6 +11,7 @@ import FinderNavigator from "./FinderNavigator";
 import OwnerNavigator from "./OwnerNavigator";
 import EditProfileScreen from "../screens/EditProfileScreen";
 import SettingsScreen from "../screens/SettingsScreen";
+import TransactionScreen from "../screens/common/TransactionScreen";
 const Stack = createNativeStackNavigator();
 
 export default function AppNavigator() {
@@ -61,6 +62,11 @@ export default function AppNavigator() {
             options={{ headerShown: false }}
           />
           <Stack.Screen name="Settings" component={SettingsScreen} />
+          <Stack.Screen
+            name="TransactionScreen"
+            component={TransactionScreen}
+            options={{ title: "Return Item" }}
+          />
         </>
       )}
     </Stack.Navigator>

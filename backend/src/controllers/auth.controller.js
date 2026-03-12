@@ -1,11 +1,10 @@
 import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import { generateOTP } from "../utils/otp.js";
-
+// import { sendPushNotification } from "../utils/pushNotification.js";
 // MOBILE LOGIN – SEND OTP
 export const loginWithMobile = async (req, res) => {
-  const { mobile } = req.body;
-
+  const { mobile, expoPushToken } = req.body;
   const user = await User.findOne({ mobile });
   if (!user) {
     return res.status(404).json({ code: "USER_NOT_FOUND" });
@@ -14,11 +13,23 @@ export const loginWithMobile = async (req, res) => {
   const otp = generateOTP();
   user.otp = otp;
   user.otpExpires = Date.now() + 5 * 60 * 1000;
+  // if (expoPushToken) {
+  //   user.expoPushToken = expoPushToken;
+  // }
   await user.save();
 
   console.log("LOGIN OTP:", otp); // replace with SMS later
-
-  res.json({ message: "OTP sent" });
+  // if (expoPushToken) {
+  //   await sendPushNotification(
+  //     expoPushToken,
+  //     "FindIt+ Login OTP",
+  //     `Your OTP is ${otp}`,
+  //   );
+  // }
+  res.json({
+    message: "OTP sent",
+    otp,
+  });
 };
 
 // USERID + PASSWORD LOGIN
@@ -80,7 +91,13 @@ export const registerUser = async (req, res) => {
   await user.save();
 
   console.log("REGISTER OTP:", otp);
-
+  // if (expoPushToken) {
+  //   await sendPushNotification(
+  //     expoPushToken,
+  //     "FindIt+ Verification",
+  //     `Your OTP is ${otp}`,
+  //   );
+  // }
   res.json({ message: "OTP sent for registration" });
 };
 export const verifyRegisterOTP = async (req, res) => {
@@ -101,7 +118,7 @@ export const verifyRegisterOTP = async (req, res) => {
 };
 
 export const sendRegisterOtp = async (req, res) => {
-  const { mobile } = req.body;
+  const { mobile, expoPushToken } = req.body;
 
   if (!mobile || mobile.length !== 10) {
     return res.status(400).json({ message: "Invalid mobile number" });
@@ -120,11 +137,23 @@ export const sendRegisterOtp = async (req, res) => {
 
   user.otp = otp;
   user.otpExpires = Date.now() + 5 * 60 * 1000;
+  // if (expoPushToken) {
+  //   user.expoPushToken = expoPushToken;
+  // }
   await user.save();
 
   console.log("REGISTER OTP:", otp);
-
-  res.json({ message: "OTP sent" });
+  // if (expoPushToken) {
+  //   await sendPushNotification(
+  //     expoPushToken,
+  //     "FindIt+ Verification",
+  //     `Your OTP is ${otp}`,
+  //   );
+  // }
+  res.json({
+    message: "OTP sent",
+    otp,
+  });
 };
 export const verifyRegisterOtp = async (req, res) => {
   const { mobile, otp } = req.body;
@@ -148,7 +177,7 @@ export const verifyRegisterOtp = async (req, res) => {
   };
   res.json({
     message: "OTP verified successfully",
-    user, // ✅ RETURN USER
+    user: safeUser,
   });
 };
 export const checkUserId = async (req, res) => {

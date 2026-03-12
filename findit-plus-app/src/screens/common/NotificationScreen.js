@@ -32,6 +32,12 @@ export default function NotificationScreen() {
 
   useEffect(() => {
     fetchNotifications();
+
+    const interval = setInterval(() => {
+      fetchNotifications();
+    }, 5000);
+
+    return () => clearInterval(interval);
   }, []);
 
   const renderItem = ({ item }) => (

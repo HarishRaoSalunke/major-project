@@ -5,28 +5,40 @@ import {
   StyleSheet,
   Image,
   ActivityIndicator,
+  TouchableOpacity,
 } from "react-native";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { MATCHES_URL } from "../../utils/constants";
 import { useTheme } from "../../context/ThemeContext";
-
+import { getTransaction } from "../../services/transactionApi";
 export default function MatchedFoundItemsScreen({ route }) {
   const itemId = route?.params?.itemId;
   const { colors } = useTheme();
-  const [matches, setMatches] = useState([]);
-  const [loading, setLoading] = useState(true);
 
+  const [matches, setMatches] = useState([]);
+  const [transaction, setTransaction] = useState(null);
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
-    if (itemId) {
-      fetchMatches();
-    } else {
+    if (!itemId) {
       setLoading(false);
+      return;
     }
-  }, []);
+
+    fetchMatches();
+
+    // const interval = setInterval(() => {
+    //   fetchMatches();
+    // }, 5000); // refresh every 5 seconds
+    // fetchMatches();
+    // return () => clearInterval(interval);
+  }, [itemId]);
 
   const fetchMatches = async () => {
     try {
+      const transactionData = await getTransaction(itemId);
+      setTransaction(transactionData);
+
       const res = await axios.get(`${MATCHES_URL}/${itemId}`);
       setMatches(res.data);
     } catch (error) {
@@ -57,38 +69,63 @@ export default function MatchedFoundItemsScreen({ route }) {
       contentContainerStyle={{ padding: 16 }}
       ListEmptyComponent={
         <Text style={{ textAlign: "center", marginTop: 40 }}>
-          No matches found yet.
+          No AI matches found yet.
         </Text>
       }
-      renderItem={({ item }) => (
-        <View style={[styles.card, { backgroundColor: colors.card }]}>
-          {item.itemId?.image && (
-            <Image
-              source={{
-                uri: `http://192.168.29.9:5000/uploads/${item.itemId.image}`,
-              }}
-              style={styles.image}
-            />
-          )}
+      renderItem={({ item }) => {
+        const matchItem = item.itemId;
+        const scorePercent = Math.round(item.score || 0);
 
-          <Text style={[styles.title, { color: colors.text }]}>
-            {item.itemId?.title}
-          </Text>
+        return (
+          <View style={[styles.card, { backgroundColor: colors.card }]}>
+            {matchItem?.image && (
+              <Image
+                source={{
+                  uri: `http://192.168.29.9:5000/uploads/${matchItem.image}`,
+                }}
+                style={styles.image}
+              />
+            )}
 
-          <Text style={[styles.score, { color: getScoreColor(item.score) }]}>
-            Match Score: {item.score}%
-          </Text>
-
-          <View style={styles.breakdown}>
-            <Text>Text: {item.breakdown?.textScore?.toFixed(0) || 0}%</Text>
-            <Text>Image: {item.breakdown?.imageScore?.toFixed(0) || 0}%</Text>
-            <Text>
-              Location: {item.breakdown?.locationScore?.toFixed(0) || 0}%
+            <Text style={[styles.title, { color: colors.text }]}>
+              {matchItem?.title}
             </Text>
-            <Text>Time: {item.breakdown?.timeScore?.toFixed(0) || 0}%</Text>
+
+            <Text
+              style={[styles.score, { color: getScoreColor(scorePercent) }]}
+            >
+              Match Score: {scorePercent}%
+            </Text>
+
+            <View style={styles.breakdown}>
+              <Text>Text: {(item.breakdown?.textScore || 0).toFixed(0)}%</Text>
+              <Text>
+                Image: {(item.breakdown?.imageScore || 0).toFixed(0)}%
+              </Text>
+              <Text>
+                Location: {(item.breakdown?.locationScore || 0).toFixed(0)}%
+              </Text>
+              <Text>Time: {(item.breakdown?.timeScore || 0).toFixed(0)}%</Text>
+            </View>
+            {transaction && (
+              <View style={{ marginTop: 10 }}>
+                <Text style={{ fontWeight: "600", color: colors.text }}>
+                  Matched User: {transaction.matchedUserId?.name || "Unknown"}
+                </Text>
+
+                <Text style={{ color: colors.text }}>
+                  Contact:{" "}
+                  {transaction.matchedUserId?.mobile || "Not available"}
+                </Text>
+
+                <Text style={{ color: colors.text }}>
+                  Return Status: {transaction.returnStatus}
+                </Text>
+              </View>
+            )}
           </View>
-        </View>
-      )}
+        );
+      }}
     />
   );
 }

@@ -58,6 +58,18 @@ const lostItemSchema = new mongoose.Schema(
         },
       },
     ],
+    matchedUserId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+
+    returnStatus: {
+      type: String,
+      enum: ["pending", "in_progress", "returned"],
+      default: "pending",
+    },
+
+    returnedAt: Date,
   },
   { timestamps: true },
 );

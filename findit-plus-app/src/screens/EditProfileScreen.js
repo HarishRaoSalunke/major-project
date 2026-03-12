@@ -11,7 +11,7 @@ import { useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 const PRIMARY = "#2563EB";
-const API = "http://192.168.29.9:5000/api/auth";
+const API = "http://10.40.107.8:5000/api/auth";
 const HEADER_BG = "#F3F4F6";
 const HEADER_TEXT = "#111827";
 export default function EditProfileScreen({ navigation }) {

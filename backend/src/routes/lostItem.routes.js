@@ -1,11 +1,21 @@
 import express from "express";
-import { createLostItem } from "../controllers/lostItem.controller.js";
+// import { createLostItem } from "../controllers/lostItem.controller.js";
 import upload from "../middleware/upload.middleware.js";
-import { getLostItems } from "../controllers/lostItem.controller.js";
-import { getMyFoundPosts } from "../controllers/lostItem.controller.js";
-import { getFoundMatchesForOwner } from "../controllers/lostItem.controller.js";
-import { getMyLostPosts } from "../controllers/lostItem.controller.js";
-import { getItemMatches } from "../controllers/lostItem.controller.js";
+// import { getLostItems } from "../controllers/lostItem.controller.js";
+// import { getMyFoundPosts } from "../controllers/lostItem.controller.js";
+// import { getFoundMatchesForOwner } from "../controllers/lostItem.controller.js";
+// import { getMyLostPosts } from "../controllers/lostItem.controller.js";
+// import { getItemMatches } from "../controllers/lostItem.controller.js";
+import {
+  createLostItem,
+  getLostItems,
+  getMyFoundPosts,
+  getFoundMatchesForOwner,
+  getMyLostPosts,
+  getItemMatches,
+  getMatches,
+  getMatchCount,
+} from "../controllers/lostItem.controller.js";
 const router = express.Router();
 
 router.post("/create", upload.single("image"), createLostItem);
@@ -15,4 +25,6 @@ router.get("/my-found/:userId", getMyFoundPosts);
 router.get("/found-matches/:userId", getFoundMatchesForOwner);
 router.get("/my-lost/:userId", getMyLostPosts);
 router.get("/matches/:itemId", getItemMatches);
+router.get("/matches", getMatches);
+router.get("/matches-count/:itemId", getMatchCount);
 export default router;

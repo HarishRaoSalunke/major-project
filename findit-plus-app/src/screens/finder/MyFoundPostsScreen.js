@@ -12,7 +12,7 @@ import { AuthContext } from "../../context/AuthContext";
 import { BASE_URL } from "../../utils/constants";
 import { useTheme } from "../../context/ThemeContext";
 
-export default function MyFoundPostsScreen() {
+export default function MyFoundPostsScreen({ navigation }) {
   const { colors } = useTheme();
   const { user } = useContext(AuthContext);
 
@@ -58,7 +58,14 @@ export default function MyFoundPostsScreen() {
           </Text>
         }
         renderItem={({ item }) => (
-          <TouchableOpacity style={styles.card}>
+          <TouchableOpacity
+            style={styles.card}
+            onPress={() =>
+              navigation.navigate("MatchedLostItems", {
+                itemId: item._id,
+              })
+            }
+          >
             {/* IMAGE */}
             {item.image && (
               <Image
