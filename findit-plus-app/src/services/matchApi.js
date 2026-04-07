@@ -1,4 +1,4 @@
-const API = "http://192.168.29.9:5000/api/lost";
+const API = "http://172.18.82.76:5000/api/lost";
 
 export const getItemMatches = async (itemId) => {
   const res = await fetch(`${API}/matches/${itemId}`);

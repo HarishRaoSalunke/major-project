@@ -13,8 +13,8 @@ import { RegisterContext } from "../../context/RegisterContext";
 import { Ionicons } from "@expo/vector-icons";
 import showLocalNotification from "../../utils/showLocalNotification";
 // import registerForPushNotifications from "../../utils/registerForPushNotifications";
-const API = "http://10.40.107.8:5000/api/auth";
-
+// const API = "http://10.40.107.8:5000/api/auth";
+const API = "http://172.18.82.76:5000/api/auth";
 export default function RegisterScreen({ navigation }) {
   const { registerData, updateField } = useContext(RegisterContext);
 

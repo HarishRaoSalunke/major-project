@@ -16,8 +16,8 @@ const PRIMARY = "#2563EB";
 const SECONDARY = "#60A5FA";
 const BG_TOP = "#EEF2FF";
 const BG_BOTTOM = "#FFFFFF";
-const API_BASE = "http://10.40.107.8:5000/api/auth";
-
+// const API_BASE = "http://10.40.107.8:5000/api/auth";
+const API_BASE = "http://172.18.82.76:5000/api/auth";
 export default function LoginScreen({ navigation }) {
   const [mode, setMode] = useState("mobile");
   const [mobile, setMobile] = useState("");
